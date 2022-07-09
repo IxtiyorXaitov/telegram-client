@@ -30,7 +30,7 @@ public class Client {
     private static volatile boolean haveAuthorization = false;
 
 
-    public static TelegramClient getClient() {
+    public static TelegramClient createClient() {
         try {
             Init.start();
         } catch (CantLoadLibrary e) {
@@ -73,9 +73,7 @@ public class Client {
 
     }
 
-
     public static class RegHandler implements ResultHandler {
-
 
         @Override
         public void onResult(TdApi.Object object) {
@@ -217,7 +215,6 @@ public class Client {
             return consoleStr;
         }
 
-
     }
 
     public static class AuthorizationRequestHandler implements ResultHandler {
@@ -243,5 +240,8 @@ public class Client {
         }
     }
 
+    public static TelegramClient getClient() {
+        return client;
+    }
 }
 
