@@ -40,7 +40,7 @@ public class TgServiceImpl implements TgService {
         for (Long userId : userIdList) {
 
             log.info("userId {}", userId);
-            client.send(new TdApi.GetUser(userId), new AuthorizationRequestHandler());
+            client.send(new TdApi.GetUserFullInfo(userId), new AuthorizationRequestHandler());
 
             try {
                 Thread.sleep(1000);
@@ -54,11 +54,10 @@ public class TgServiceImpl implements TgService {
 
     @Override
     public HttpEntity<?> infoUsersList(List<Long> userIdList) {
-
         for (Long userId : userIdList) {
 
             log.info("userId {}", userId);
-            client.send(new TdApi.GetUserFullInfo(userId), new AuthorizationRequestHandler());
+            client.send(new TdApi.GetUser(userId), new AuthorizationRequestHandler());
 
             try {
                 Thread.sleep(1000);
