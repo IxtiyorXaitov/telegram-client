@@ -61,7 +61,7 @@ public class HandlerService implements ResultHandler {
             );
 
             log.info("newUser {}", newUser);
-//            userRepository.save(newUser);
+            userRepository.save(newUser);
         }
 
     }
