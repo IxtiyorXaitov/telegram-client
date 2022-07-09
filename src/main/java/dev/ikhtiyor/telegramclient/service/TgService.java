@@ -13,6 +13,8 @@ public interface TgService {
     HttpEntity<?> createClient();
 
     HttpEntity<?> chatList();
+    HttpEntity<?> infoUsersFullList(List<Long> userIdList);
 
     HttpEntity<?> infoUsersList(List<Long> userIdList);
+
 }

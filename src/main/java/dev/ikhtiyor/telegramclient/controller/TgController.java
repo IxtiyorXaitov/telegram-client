@@ -20,6 +20,7 @@ public interface TgController {
     String CREATE_CLIENT = "/create-client";
     String CHAT_LIST = "/chat-list";
 
+    String INFO_USERS_FULL_LIST = "/info-users-full-list";
     String INFO_USERS_LIST = "/info-users-list";
 
 
@@ -28,6 +29,11 @@ public interface TgController {
 
     @GetMapping(CHAT_LIST)
     HttpEntity<?> chatList();
+
+    @PostMapping(INFO_USERS_FULL_LIST)
+    HttpEntity<?> infoUsersFullList(
+            @RequestBody List<Long> userIdList
+    );
 
     @PostMapping(INFO_USERS_LIST)
     HttpEntity<?> infoUsersList(

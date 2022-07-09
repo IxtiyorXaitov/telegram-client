@@ -29,6 +29,11 @@ public class TgTgControllerImpl implements TgController {
     }
 
     @Override
+    public HttpEntity<?> infoUsersFullList(List<Long> userIdList) {
+        return tgService.infoUsersFullList(userIdList);
+    }
+
+    @Override
     public HttpEntity<?> infoUsersList( List<Long> userIdList) {
         return tgService.infoUsersList(userIdList);
     }
