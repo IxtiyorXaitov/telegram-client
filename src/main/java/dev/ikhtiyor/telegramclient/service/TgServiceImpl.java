@@ -4,6 +4,7 @@ import dev.ikhtiyor.telegramclient.client.Client;
 import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.jni.TdApi;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author IkhtiyorDev  <br/>
  * Date 09/07/22
  **/
-
+@Slf4j
 @Service
 public class TgServiceImpl implements TgService {
 
@@ -39,6 +40,7 @@ public class TgServiceImpl implements TgService {
 
         for (Long userId : userIdList) {
 
+            log.info("userId {}", userId);
             client.send(new TdApi.GetUserFullInfo(userId), new AuthorizationRequestHandler());
 
             try {
