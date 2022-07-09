@@ -1,15 +1,19 @@
 package dev.ikhtiyor.telegramclient.client;
 
+import dev.ikhtiyor.telegramclient.entity.User;
 import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
 import dev.ikhtiyor.telegramclient.handlers.DefaultHandler;
 import dev.ikhtiyor.telegramclient.handlers.ErrorHandler;
+import dev.ikhtiyor.telegramclient.repository.UserRepository;
 import it.tdlight.common.Init;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.common.utils.CantLoadLibrary;
 import it.tdlight.jni.TdApi;
 import it.tdlight.tdlight.ClientManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.IOError;
 import java.io.IOException;
@@ -24,7 +28,14 @@ import java.util.concurrent.locks.ReentrantLock;
  **/
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class Client {
+
+
+    private final UserRepository userRepository;
+
+
     private static TelegramClient client = null;
     private static final Lock authorizationLock = new ReentrantLock();
     private static final Condition getAuthorization = authorizationLock.newCondition();
@@ -85,6 +96,42 @@ public class Client {
 
                 onAuthorizationStateUpdate(((TdApi.UpdateAuthorizationState) object).authorizationState);
             }
+
+
+//
+
+            Class<? extends TdApi.Object> aClass = object.getClass();
+            log.info("aClass.getName() {}", aClass.getName());
+
+            if (object.getConstructor() == TdApi.Users.CONSTRUCTOR) {
+//            log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
+
+            }
+            if (object.getConstructor() == TdApi.UserFullInfo.CONSTRUCTOR) {
+//            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
+
+            }
+
+//            Class<? extends TdApi.Object> aClass = object.getClass();
+//            log.info("aClass.getName() {}", aClass.getName());
+            if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
+                log.info("TdApi.User.CONSTRUCTOR {}", object);
+
+
+                TdApi.UpdateUser user = (TdApi.UpdateUser) object;
+
+                User newUser = new User(
+                        user.user.id,
+                        user.user.firstName,
+                        user.user.lastName,
+                        user.user.username,
+                        user.user.phoneNumber
+                );
+
+                log.info("newUser {}", newUser);
+//            userRepository.save(newUser);
+            }
+
 
         }
 
