@@ -34,20 +34,25 @@ public class HandlerService implements ResultHandler {
 //            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
 
         }
-        if (object.getConstructor() == TdApi.User.CONSTRUCTOR) {
+
+//            Class<? extends TdApi.Object> aClass = object.getClass();
+//            log.info("aClass.getName() {}", aClass.getName());
+        if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
             log.info("TdApi.User.CONSTRUCTOR {}", object);
 
-            TdApi.User user = (TdApi.User) object;
+
+            TdApi.UpdateUser user = (TdApi.UpdateUser) object;
 
             User newUser = new User(
-                    user.id,
-                    user.firstName,
-                    user.lastName,
-                    user.username,
-                    user.phoneNumber
+                    user.user.id,
+                    user.user.firstName,
+                    user.user.lastName,
+                    user.user.username,
+                    user.user.phoneNumber
             );
 
-            userRepository.save(newUser);
+            log.info("newUser {}", newUser);
+//            userRepository.save(newUser);
         }
 
     }
