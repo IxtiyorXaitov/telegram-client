@@ -9,12 +9,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TelegramClientApplication {
 
-//    private static TelegramClient client;
+    private static TelegramClient client;
 
     public static void main(String[] args) {
         SpringApplication.run(TelegramClientApplication.class, args);
 
-//        client = Client.getClient();
+        client = Client.getClient();
+
+        client.send(new TdApi.GetChats(), new Client.AuthorizationRequestHandler());
 
     }
 

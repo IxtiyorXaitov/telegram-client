@@ -29,13 +29,6 @@ public class Client {
     private static final Condition getAuthorization = authorizationLock.newCondition();
     private static volatile boolean haveAuthorization = false;
 
-    public static void main(String[] args) {
-        client = Client.getClient();
-
-
-        client.send(new TdApi.GetChats(), new AuthorizationRequestHandler());
-
-    }
 
     public static TelegramClient getClient() {
         try {
@@ -97,6 +90,8 @@ public class Client {
                 log.info("TdApi.GetChats.CONSTRUCTOR");
                 log.info("o {}", object);
             }
+
+
         }
 
         private static void onAuthorizationStateUpdate(TdApi.AuthorizationState authorizationState) {
@@ -225,7 +220,7 @@ public class Client {
 
     }
 
-    private static class AuthorizationRequestHandler implements ResultHandler {
+    public static class AuthorizationRequestHandler implements ResultHandler {
         @Override
         public void onResult(TdApi.Object object) {
             log.info("object {}", object);
