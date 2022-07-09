@@ -15,8 +15,8 @@ public class AuthorizationRequestHandler implements ResultHandler {
 
     @Override
     public void onResult(TdApi.Object object) {
-        log.info("object {}", object);
-        log.info("Constructor {}", object.getConstructor());
+//        log.info("object {}", object);
+//        log.info("Constructor {}", object.getConstructor());
 
         switch (object.getConstructor()) {
             case TdApi.Error.CONSTRUCTOR:

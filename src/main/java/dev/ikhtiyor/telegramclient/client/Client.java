@@ -81,7 +81,7 @@ public class Client {
 
             if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
 
-                log.info("TdApi.Object object onResult {}", object);
+//                log.info("TdApi.Object object onResult {}", object);
 
                 onAuthorizationStateUpdate(((TdApi.UpdateAuthorizationState) object).authorizationState);
             }

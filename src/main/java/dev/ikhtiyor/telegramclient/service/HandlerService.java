@@ -23,12 +23,15 @@ public class HandlerService implements ResultHandler {
     @Override
     public void onResult(TdApi.Object object) {
 
+        Class<? extends TdApi.Object> aClass = object.getClass();
+        log.info("aClass.getName() {}", aClass.getName());
+
         if (object.getConstructor() == TdApi.Users.CONSTRUCTOR) {
-            log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
+//            log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
 
         }
         if (object.getConstructor() == TdApi.UserFullInfo.CONSTRUCTOR) {
-            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
+//            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
 
         }
         if (object.getConstructor() == TdApi.User.CONSTRUCTOR) {
