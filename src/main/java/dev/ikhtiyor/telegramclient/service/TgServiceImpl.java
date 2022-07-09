@@ -4,6 +4,7 @@ import dev.ikhtiyor.telegramclient.client.Client;
 import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.jni.TdApi;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,16 @@ import java.util.List;
  **/
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TgServiceImpl implements TgService {
 
+    private final Client createClient;
     private TelegramClient client;
 
     @Override
     public HttpEntity<?> createClient() {
-        client = Client.createClient();
+
+        client = createClient.createClient();
         return ResponseEntity.ok().build();
     }
 

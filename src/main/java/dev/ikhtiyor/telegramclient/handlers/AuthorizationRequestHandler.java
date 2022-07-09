@@ -3,6 +3,7 @@ package dev.ikhtiyor.telegramclient.handlers;
 import dev.ikhtiyor.telegramclient.client.Client;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -11,7 +12,10 @@ import lombok.extern.slf4j.Slf4j;
  **/
 
 @Slf4j
+@RequiredArgsConstructor
 public class AuthorizationRequestHandler implements ResultHandler {
+
+    private Client client;
 
     @Override
     public void onResult(TdApi.Object object) {
@@ -21,7 +25,7 @@ public class AuthorizationRequestHandler implements ResultHandler {
         switch (object.getConstructor()) {
             case TdApi.Error.CONSTRUCTOR:
                 System.err.println("Receive an error: " + object);
-                Client.RegHandler.onAuthorizationStateUpdate(null);
+                client.onAuthorizationStateUpdate(null);
                 break;
             case TdApi.Ok.CONSTRUCTOR:
                 System.err.println("OK: " + object);
