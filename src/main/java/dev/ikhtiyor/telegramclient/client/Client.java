@@ -9,8 +9,8 @@ import it.tdlight.common.TelegramClient;
 import it.tdlight.common.utils.CantLoadLibrary;
 import it.tdlight.jni.TdApi;
 import it.tdlight.tdlight.ClientManager;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOError;
@@ -27,7 +27,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class Client {
 
     private final HandlerService handlerService;
@@ -36,6 +35,12 @@ public class Client {
     private static final Lock authorizationLock = new ReentrantLock();
     private static final Condition getAuthorization = authorizationLock.newCondition();
     private static volatile boolean haveAuthorization = false;
+
+    public Client(
+            @Lazy HandlerService handlerService
+    ) {
+        this.handlerService = handlerService;
+    }
 
 
     public TelegramClient createClient() {
