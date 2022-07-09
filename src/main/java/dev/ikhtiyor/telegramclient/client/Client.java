@@ -81,7 +81,7 @@ public class Client {
 
 //            Class<? extends TdApi.Object> aClass = object.getClass();
 //            log.info("aClass.getName() {}", aClass.getName());
-            if (object.getConstructor() == TdApi.User.CONSTRUCTOR) {
+            if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
                 log.info("TdApi.User.CONSTRUCTOR {}", object);
             }
 
