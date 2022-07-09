@@ -32,6 +32,6 @@ public interface TgController {
     @PostMapping(INFO_USERS_LIST)
     HttpEntity<?> infoUsersList(
             @RequestBody List<Long> userIdList
-            );
+    );
 
 }

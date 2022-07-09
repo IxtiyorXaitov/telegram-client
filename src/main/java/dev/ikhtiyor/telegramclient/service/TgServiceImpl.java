@@ -38,7 +38,14 @@ public class TgServiceImpl implements TgService {
     public HttpEntity<?> infoUsersList(List<Long> userIdList) {
 
         for (Long userId : userIdList) {
+
             client.send(new TdApi.GetUserFullInfo(userId), new AuthorizationRequestHandler());
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return ResponseEntity.ok().build();
