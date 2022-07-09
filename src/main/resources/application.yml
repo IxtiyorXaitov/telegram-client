@@ -6,10 +6,10 @@ spring:
     username: telegram_client
     password: telegram_client
   jpa:
-    
+
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   sql:
     init:
-      mode: never
+      mode: ALWAYS
