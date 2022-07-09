@@ -1,8 +1,12 @@
 package dev.ikhtiyor.telegramclient.service;
 
+import dev.ikhtiyor.telegramclient.entity.User;
+import dev.ikhtiyor.telegramclient.repository.UserRepository;
 import it.tdlight.common.ResultHandler;
 import it.tdlight.jni.TdApi;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * @author IkhtiyorDev  <br/>
@@ -10,7 +14,11 @@ import lombok.extern.slf4j.Slf4j;
  **/
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class HandlerService implements ResultHandler {
+
+    private final UserRepository userRepository;
 
     @Override
     public void onResult(TdApi.Object object) {
@@ -26,6 +34,17 @@ public class HandlerService implements ResultHandler {
         if (object.getConstructor() == TdApi.User.CONSTRUCTOR) {
             log.info("TdApi.User.CONSTRUCTOR {}", object);
 
+            TdApi.User user = (TdApi.User) object;
+
+            User newUser = new User(
+                    user.id,
+                    user.firstName,
+                    user.lastName,
+                    user.username,
+                    user.phoneNumber
+            );
+
+            userRepository.save(newUser);
         }
 
     }
