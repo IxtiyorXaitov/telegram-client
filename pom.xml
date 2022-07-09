@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>dev.ikhtiyor</groupId>
+    <artifactId>telegram-client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>telegram-client</name>
+    <description>telegram-client</description>
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+
+    <repositories>
+
+        <!-- Add the following repository -->
+        <repository>
+            <id>mchv</id>
+            <name>MCHV Apache Maven Packages</name>
+            <url>https://mvn.mchv.eu/repository/mchv/</url>
+        </repository>
+
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Add the following dependencies -->
+<!--        <dependency>-->
+<!--            <groupId>it.tdlight</groupId>-->
+<!--            <artifactId>tdlight-java</artifactId>-->
+<!--            <version>2.8.4.1</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>it.tdlight</groupId>-->
+<!--            <artifactId>tdlight-natives-linux-amd64</artifactId>-->
+<!--&lt;!&ndash;            <artifactId>tdlight-natives-osx-amd64</artifactId>&ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-amd64              &ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-aarch64            &ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-x86                &ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-armhf              &ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-ppc64le            &ndash;&gt;-->
+<!--            &lt;!&ndash;    tdlight-natives-linux-s390x              &ndash;&gt;-->
+<!--            <version>3.3.49</version>-->
+<!--        </dependency>-->
+        <!-- Include other native versions that you want, for example for windows, osx, ... -->
+
+        <dependency>
+            <groupId>it.tdlight</groupId>
+            <artifactId>tdlight-java</artifactId>
+            <!-- don't specify the version here -->
+        </dependency>
+
+        <dependency>
+            <groupId>it.tdlight</groupId>
+            <artifactId>tdlight-natives-linux-amd64</artifactId>
+            <!-- don't specify the version here -->
+        </dependency>
+
+    </dependencies>
+
+
+    <!--    TDLIB UCHUN -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Add the following dependency -->
+            <dependency>
+                <groupId>it.tdlight</groupId>
+                <artifactId>tdlight-java-bom</artifactId>
+                <version>2.8.1.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!--    TDLIB UCHUN -->
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
