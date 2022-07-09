@@ -1,12 +1,10 @@
 package dev.ikhtiyor.telegramclient.client;
 
-import dev.ikhtiyor.telegramclient.entity.User;
 import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
 import dev.ikhtiyor.telegramclient.handlers.DefaultHandler;
 import dev.ikhtiyor.telegramclient.handlers.ErrorHandler;
-import dev.ikhtiyor.telegramclient.repository.UserRepository;
+import dev.ikhtiyor.telegramclient.service.HandlerService;
 import it.tdlight.common.Init;
-import it.tdlight.common.ResultHandler;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.common.utils.CantLoadLibrary;
 import it.tdlight.jni.TdApi;
@@ -32,9 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor
 public class Client {
 
-
-    private final UserRepository userRepository;
-
+    private final HandlerService handlerService;
 
     private static TelegramClient client = null;
     private static final Lock authorizationLock = new ReentrantLock();
@@ -42,7 +38,7 @@ public class Client {
     private static volatile boolean haveAuthorization = false;
 
 
-    public static TelegramClient createClient() {
+    public TelegramClient createClient() {
         try {
             Init.start();
         } catch (CantLoadLibrary e) {
@@ -50,7 +46,7 @@ public class Client {
         }
 
         client = ClientManager.create();
-        client.initialize(new RegHandler(), new ErrorHandler(), new ErrorHandler());
+        client.initialize(handlerService, new ErrorHandler(), new ErrorHandler());
 
         client.execute(new TdApi.SetLogVerbosityLevel(0));
 
@@ -85,179 +81,128 @@ public class Client {
 
     }
 
-    public static class RegHandler implements ResultHandler {
+    public void onAuthorizationStateUpdate(TdApi.AuthorizationState authorizationState) {
+        AuthorizationRequestHandler authorizationRequestHandler = new AuthorizationRequestHandler();
+        log.info("authorizationRequestHandler {}", authorizationRequestHandler);
+        switch (authorizationState.getConstructor()) {
 
-        @Override
-        public void onResult(TdApi.Object object) {
+            case TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR");
 
-            if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
+                TdApi.TdlibParameters parameters = new TdApi.TdlibParameters();
 
-//                log.info("TdApi.Object object onResult {}", object);
+                parameters.databaseDirectory = "tdlib";
+                parameters.useMessageDatabase = true;
+                parameters.useSecretChats = true;
+                parameters.apiId = 16198866;
+                parameters.apiHash = "ad1bbfb8a79ac9f99ab66766c806b2f1";
+                parameters.systemLanguageCode = "en";
+                parameters.deviceModel = "Other";
+                parameters.applicationVersion = "1.0";
+                parameters.enableStorageOptimizer = true;
 
-                onAuthorizationStateUpdate(((TdApi.UpdateAuthorizationState) object).authorizationState);
-            }
+                TdApi.SetTdlibParameters tdlibParameters = new TdApi.SetTdlibParameters(parameters);
 
+                log.info("tdlibParameters {}", tdlibParameters);
+                client.send(tdlibParameters, authorizationRequestHandler);
 
-//
+                break;
 
-            Class<? extends TdApi.Object> aClass = object.getClass();
-            log.info("aClass.getName() {}", aClass.getName());
+            case TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:");
+                TdApi.CheckDatabaseEncryptionKey encryptionKey = new TdApi.CheckDatabaseEncryptionKey();
 
-            if (object.getConstructor() == TdApi.Users.CONSTRUCTOR) {
-//            log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
+                log.info("encryptionKey {}", encryptionKey);
+                client.send(encryptionKey, authorizationRequestHandler);
+                break;
 
-            }
-            if (object.getConstructor() == TdApi.UserFullInfo.CONSTRUCTOR) {
-//            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
+            case TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR:");
+                String phoneNumber = getString("Please enter phone number: ");
 
-            }
+                TdApi.SetAuthenticationPhoneNumber authenticationPhoneNumber = new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null);
+                log.info("authenticationPhoneNumber {}", authenticationPhoneNumber);
+                client.send(authenticationPhoneNumber, authorizationRequestHandler);
+                break;
 
-//            Class<? extends TdApi.Object> aClass = object.getClass();
-//            log.info("aClass.getName() {}", aClass.getName());
-            if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
-                log.info("TdApi.User.CONSTRUCTOR {}", object);
+            case TdApi.AuthorizationStateWaitOtherDeviceConfirmation.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitOtherDeviceConfirmation.CONSTRUCTOR:");
+                String link = ((TdApi.AuthorizationStateWaitOtherDeviceConfirmation) authorizationState).link;
+                System.out.println("Please confirm this login link on another device: " + link);
 
+                break;
 
-                TdApi.UpdateUser user = (TdApi.UpdateUser) object;
+            case TdApi.AuthorizationStateWaitCode.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitCode.CONSTRUCTOR:");
+                String code = getString("Please enter authentication code: ");
+                TdApi.CheckAuthenticationCode checkAuthenticationCode = new TdApi.CheckAuthenticationCode(code);
 
-                User newUser = new User(
-                        user.user.id,
-                        user.user.firstName,
-                        user.user.lastName,
-                        user.user.username,
-                        user.user.phoneNumber
-                );
+                log.info("checkAuthenticationCode {}", checkAuthenticationCode);
+                client.send(checkAuthenticationCode, authorizationRequestHandler);
 
-                log.info("newUser {}", newUser);
-//            userRepository.save(newUser);
-            }
+                break;
 
+            case TdApi.AuthorizationStateWaitRegistration.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateWaitRegistration.CONSTRUCTOR:");
 
-        }
+                String firstName = getString("Please enter your first name: ");
+                String lastName = getString("Please enter your last name: ");
 
-        public static void onAuthorizationStateUpdate(TdApi.AuthorizationState authorizationState) {
-            AuthorizationRequestHandler authorizationRequestHandler = new AuthorizationRequestHandler();
-            log.info("authorizationRequestHandler {}", authorizationRequestHandler);
-            switch (authorizationState.getConstructor()) {
+                TdApi.RegisterUser registerUser = new TdApi.RegisterUser(firstName, lastName);
+                log.info("registerUser {}", registerUser);
+                client.send(registerUser, authorizationRequestHandler);
 
-                case TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR");
+                break;
 
-                    TdApi.TdlibParameters parameters = new TdApi.TdlibParameters();
+            case TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR:
 
-                    parameters.databaseDirectory = "tdlib";
-                    parameters.useMessageDatabase = true;
-                    parameters.useSecretChats = true;
-                    parameters.apiId = 16198866;
-                    parameters.apiHash = "ad1bbfb8a79ac9f99ab66766c806b2f1";
-                    parameters.systemLanguageCode = "en";
-                    parameters.deviceModel = "Other";
-                    parameters.applicationVersion = "1.0";
-                    parameters.enableStorageOptimizer = true;
+                log.info("TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR:");
+                String password = getString("Please enter password: ");
 
-                    TdApi.SetTdlibParameters tdlibParameters = new TdApi.SetTdlibParameters(parameters);
+                TdApi.CheckAuthenticationPassword checkAuthenticationPassword = new TdApi.CheckAuthenticationPassword(password);
 
-                    log.info("tdlibParameters {}", tdlibParameters);
-                    client.send(tdlibParameters, authorizationRequestHandler);
+                log.info("checkAuthenticationPassword {}", checkAuthenticationPassword);
 
-                    break;
-                case TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR:");
-                    TdApi.CheckDatabaseEncryptionKey encryptionKey = new TdApi.CheckDatabaseEncryptionKey();
+                client.send(checkAuthenticationPassword, authorizationRequestHandler);
 
-                    log.info("encryptionKey {}", encryptionKey);
-                    client.send(encryptionKey, authorizationRequestHandler);
-                    break;
+                break;
 
-                case TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR:");
-                    String phoneNumber = getString("Please enter phone number: ");
+            case TdApi.AuthorizationStateReady.CONSTRUCTOR:
+                log.info("TdApi.AuthorizationStateReady.CONSTRUCTOR:");
+                haveAuthorization = true;
+                authorizationLock.lock();
 
-                    TdApi.SetAuthenticationPhoneNumber authenticationPhoneNumber = new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null);
-                    log.info("authenticationPhoneNumber {}", authenticationPhoneNumber);
-                    client.send(authenticationPhoneNumber, authorizationRequestHandler);
-                    break;
-
-                case TdApi.AuthorizationStateWaitOtherDeviceConfirmation.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitOtherDeviceConfirmation.CONSTRUCTOR:");
-                    String link = ((TdApi.AuthorizationStateWaitOtherDeviceConfirmation) authorizationState).link;
-                    System.out.println("Please confirm this login link on another device: " + link);
-
-                    break;
-
-                case TdApi.AuthorizationStateWaitCode.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitCode.CONSTRUCTOR:");
-                    String code = getString("Please enter authentication code: ");
-                    TdApi.CheckAuthenticationCode checkAuthenticationCode = new TdApi.CheckAuthenticationCode(code);
-
-                    log.info("checkAuthenticationCode {}", checkAuthenticationCode);
-                    client.send(checkAuthenticationCode, authorizationRequestHandler);
-
-                    break;
-
-                case TdApi.AuthorizationStateWaitRegistration.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateWaitRegistration.CONSTRUCTOR:");
-
-                    String firstName = getString("Please enter your first name: ");
-                    String lastName = getString("Please enter your last name: ");
-
-                    TdApi.RegisterUser registerUser = new TdApi.RegisterUser(firstName, lastName);
-                    log.info("registerUser {}", registerUser);
-                    client.send(registerUser, authorizationRequestHandler);
-
-                    break;
-
-                case TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR:
-
-                    log.info("TdApi.AuthorizationStateWaitPassword.CONSTRUCTOR:");
-                    String password = getString("Please enter password: ");
-
-                    TdApi.CheckAuthenticationPassword checkAuthenticationPassword = new TdApi.CheckAuthenticationPassword(password);
-
-                    log.info("checkAuthenticationPassword {}", checkAuthenticationPassword);
-
-                    client.send(checkAuthenticationPassword, authorizationRequestHandler);
-
-                    break;
-
-                case TdApi.AuthorizationStateReady.CONSTRUCTOR:
-                    log.info("TdApi.AuthorizationStateReady.CONSTRUCTOR:");
-                    haveAuthorization = true;
-                    authorizationLock.lock();
-
-                    try {
-                        getAuthorization.signal();
-                    } finally {
-                        authorizationLock.unlock();
-                    }
-
-                default:
-                    System.err.println("Unsupported authorization state: " + authorizationState);
-
-            }
-        }
-
-        private static String getString(String str) {
-            String consoleStr = null;
-            Scanner scanner = new Scanner(System.in);
-
-            do {
-                System.out.println(str);
-                consoleStr = scanner.nextLine();
-                consoleStr = consoleStr.trim();
-
-                if (consoleStr.length() < 1) {
-                    consoleStr = null;
-                    continue;
-                } else {
-                    break;
+                try {
+                    getAuthorization.signal();
+                } finally {
+                    authorizationLock.unlock();
                 }
 
-            } while (consoleStr == null);
+            default:
+                System.err.println("Unsupported authorization state: " + authorizationState);
 
-            return consoleStr;
         }
+    }
 
+    private static String getString(String str) {
+        String consoleStr = null;
+        Scanner scanner = new Scanner(System.in);
+
+        do {
+            System.out.println(str);
+            consoleStr = scanner.nextLine();
+            consoleStr = consoleStr.trim();
+
+            if (consoleStr.length() < 1) {
+                consoleStr = null;
+                continue;
+            } else {
+                break;
+            }
+
+        } while (consoleStr == null);
+
+        return consoleStr;
     }
 
     public static TelegramClient getClient() {
