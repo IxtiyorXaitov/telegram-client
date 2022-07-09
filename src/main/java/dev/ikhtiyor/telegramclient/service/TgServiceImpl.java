@@ -88,4 +88,11 @@ public class TgServiceImpl implements TgService {
         client.send(new TdApi.AddChatMembers(channelId, longs), new AuthorizationRequestHandler());
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public HttpEntity<?> getChatInfo(Long channelId) {
+
+        client.send(new TdApi.GetChat(channelId), new AuthorizationRequestHandler());
+        return ResponseEntity.ok().build();
+    }
 }

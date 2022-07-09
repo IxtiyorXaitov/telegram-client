@@ -26,7 +26,7 @@ public class HandlerService implements ResultHandler {
     public void onResult(TdApi.Object object) {
 
         Class<? extends TdApi.Object> aClass = object.getClass();
-        log.info("aClass.getName() {}", aClass.getName());
+//        log.info("aClass.getName() {}", aClass.getName());
 
         if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
 
@@ -47,7 +47,7 @@ public class HandlerService implements ResultHandler {
 //            Class<? extends TdApi.Object> aClass = object.getClass();
 //            log.info("aClass.getName() {}", aClass.getName());
         if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
-            log.info("TdApi.User.CONSTRUCTOR {}", object);
+//            log.info("TdApi.User.CONSTRUCTOR {}", object);
 
 
             TdApi.UpdateUser user = (TdApi.UpdateUser) object;
@@ -60,8 +60,12 @@ public class HandlerService implements ResultHandler {
                     user.user.phoneNumber
             );
 
-            log.info("newUser {}", newUser);
+//            log.info("newUser {}", newUser);
             userRepository.save(newUser);
+        }
+        if (object.getConstructor() == TdApi.Chat.CONSTRUCTOR) {
+            log.info("TdApi.Chat.CONSTRUCTOR");
+            log.info("object {}", object);
         }
 
     }

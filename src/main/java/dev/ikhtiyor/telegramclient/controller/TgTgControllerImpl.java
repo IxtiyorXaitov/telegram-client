@@ -42,4 +42,9 @@ public class TgTgControllerImpl implements TgController {
     public HttpEntity<?> addDbUsersToChannel(Long channelId) {
         return tgService.addDbUsersToChannel(channelId);
     }
+
+    @Override
+    public HttpEntity<?> getChatInfo(Long channelId) {
+        return tgService.getChatInfo(channelId);
+    }
 }

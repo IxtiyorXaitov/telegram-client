@@ -20,6 +20,7 @@ public interface TgController {
     String INFO_USERS_FULL_LIST = "/info-users-full-list";
     String INFO_USERS_LIST = "/info-users-list";
     String ADD_DB_USERS_TO_CHANNEL = "/add-db-users-to-channel";
+    String INFO_CHANNEL = "/info-channel";
 
 
     @GetMapping(CREATE_CLIENT)
@@ -40,6 +41,12 @@ public interface TgController {
 
     @PostMapping(ADD_DB_USERS_TO_CHANNEL)
     HttpEntity<?> addDbUsersToChannel(
+            @RequestParam(name = "channelId") Long channelId
+    );
+
+
+    @PostMapping(INFO_CHANNEL)
+    HttpEntity<?> getChatInfo(
             @RequestParam(name = "channelId") Long channelId
     );
 
