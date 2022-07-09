@@ -1,5 +1,6 @@
 package dev.ikhtiyor.telegramclient.client;
 
+import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
 import dev.ikhtiyor.telegramclient.handlers.DefaultHandler;
 import dev.ikhtiyor.telegramclient.handlers.ErrorHandler;
 import it.tdlight.common.Init;
@@ -78,21 +79,16 @@ public class Client {
         @Override
         public void onResult(TdApi.Object object) {
 
-            log.info("TdApi.Object object onResult {}", object);
-
             if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
+
+                log.info("TdApi.Object object onResult {}", object);
+
                 onAuthorizationStateUpdate(((TdApi.UpdateAuthorizationState) object).authorizationState);
             }
 
-            if (object.getConstructor() == TdApi.GetChats.CONSTRUCTOR) {
-                log.info("TdApi.GetChats.CONSTRUCTOR");
-                log.info("o {}", object);
-            }
-
-
         }
 
-        private static void onAuthorizationStateUpdate(TdApi.AuthorizationState authorizationState) {
+        public static void onAuthorizationStateUpdate(TdApi.AuthorizationState authorizationState) {
             AuthorizationRequestHandler authorizationRequestHandler = new AuthorizationRequestHandler();
             log.info("authorizationRequestHandler {}", authorizationRequestHandler);
             switch (authorizationState.getConstructor()) {
@@ -215,29 +211,6 @@ public class Client {
             return consoleStr;
         }
 
-    }
-
-    public static class AuthorizationRequestHandler implements ResultHandler {
-        @Override
-        public void onResult(TdApi.Object object) {
-            log.info("object {}", object);
-            log.info("Constructor {}", object.getConstructor());
-
-            switch (object.getConstructor()) {
-                case TdApi.Error.CONSTRUCTOR:
-                    System.err.println("Receive an error: " + object);
-                    RegHandler.onAuthorizationStateUpdate(null);
-
-                    break;
-
-                case TdApi.Ok.CONSTRUCTOR:
-                    //
-
-                    break;
-                default:
-                    System.err.println("Receive wrong response from TDlib:" + object);
-            }
-        }
     }
 
     public static TelegramClient getClient() {
