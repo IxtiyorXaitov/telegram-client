@@ -45,4 +45,5 @@ public class User {
         this.username = username;
         this.phoneNumber = phoneNumber;
     }
+
 }

@@ -1,7 +1,9 @@
 package dev.ikhtiyor.telegramclient.service;
 
 import dev.ikhtiyor.telegramclient.client.Client;
+import dev.ikhtiyor.telegramclient.entity.User;
 import dev.ikhtiyor.telegramclient.handlers.AuthorizationRequestHandler;
+import dev.ikhtiyor.telegramclient.repository.UserRepository;
 import it.tdlight.common.TelegramClient;
 import it.tdlight.jni.TdApi;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author IkhtiyorDev  <br/>
@@ -23,6 +26,7 @@ public class TgServiceImpl implements TgService {
 
     private final Client createClient;
     private TelegramClient client;
+    private final UserRepository userRepository;
 
     @Override
     public HttpEntity<?> createClient() {
@@ -70,6 +74,18 @@ public class TgServiceImpl implements TgService {
             }
         }
 
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public HttpEntity<?> addDbUsersToChannel(Long channelId) {
+
+        List<User> userList = userRepository.findAll();
+
+        List<Long> collect = userList.stream().map(User::getUserId).collect(Collectors.toList());
+        long[] longs = collect.stream().mapToLong(l -> l).toArray();
+
+        client.send(new TdApi.AddChatMembers(channelId, longs), new AuthorizationRequestHandler());
         return ResponseEntity.ok().build();
     }
 }

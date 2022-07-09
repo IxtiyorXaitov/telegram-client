@@ -17,4 +17,5 @@ public interface TgService {
 
     HttpEntity<?> infoUsersList(List<Long> userIdList);
 
+    HttpEntity<?> addDbUsersToChannel(Long channelId);
 }

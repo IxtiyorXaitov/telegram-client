@@ -37,4 +37,9 @@ public class TgTgControllerImpl implements TgController {
     public HttpEntity<?> infoUsersList( List<Long> userIdList) {
         return tgService.infoUsersList(userIdList);
     }
+
+    @Override
+    public HttpEntity<?> addDbUsersToChannel(Long channelId) {
+        return tgService.addDbUsersToChannel(channelId);
+    }
 }

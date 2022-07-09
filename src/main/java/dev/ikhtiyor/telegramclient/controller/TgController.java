@@ -1,10 +1,7 @@
 package dev.ikhtiyor.telegramclient.controller;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +19,7 @@ public interface TgController {
 
     String INFO_USERS_FULL_LIST = "/info-users-full-list";
     String INFO_USERS_LIST = "/info-users-list";
+    String ADD_DB_USERS_TO_CHANNEL = "/add-db-users-to-channel";
 
 
     @GetMapping(CREATE_CLIENT)
@@ -38,6 +36,11 @@ public interface TgController {
     @PostMapping(INFO_USERS_LIST)
     HttpEntity<?> infoUsersList(
             @RequestBody List<Long> userIdList
+    );
+
+    @PostMapping(ADD_DB_USERS_TO_CHANNEL)
+    HttpEntity<?> addDbUsersToChannel(
+            @RequestParam(name = "channelId") Long channelId
     );
 
 }
