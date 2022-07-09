@@ -79,6 +79,10 @@ public class Client {
         @Override
         public void onResult(TdApi.Object object) {
 
+            Class<? extends TdApi.Object> aClass = object.getClass();
+            log.info("aClass.getName() {}", aClass.getName());
+
+
             if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
 
 //                log.info("TdApi.Object object onResult {}", object);
