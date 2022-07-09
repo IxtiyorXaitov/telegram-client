@@ -15,8 +15,9 @@ public class HandlerService implements ResultHandler {
     @Override
     public void onResult(TdApi.Object object) {
 
-        if (object.getConstructor() == TdApi.GetContacts.CONSTRUCTOR) {
+        if (object.getConstructor() == TdApi.Users.CONSTRUCTOR) {
             log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
+
         }
 
     }
