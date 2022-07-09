@@ -2,7 +2,11 @@ package dev.ikhtiyor.telegramclient.controller;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @author IkhtiyorDev  <br/>
@@ -16,10 +20,18 @@ public interface TgController {
     String CREATE_CLIENT = "/create-client";
     String CHAT_LIST = "/chat-list";
 
+    String INFO_USERS_LIST = "/info-users-list";
+
+
     @GetMapping(CREATE_CLIENT)
     HttpEntity<?> createClient();
 
     @GetMapping(CHAT_LIST)
     HttpEntity<?> chatList();
+
+    @PostMapping(INFO_USERS_LIST)
+    HttpEntity<?> infoUsersList(
+            @RequestBody List<Long> userIdList
+            );
 
 }

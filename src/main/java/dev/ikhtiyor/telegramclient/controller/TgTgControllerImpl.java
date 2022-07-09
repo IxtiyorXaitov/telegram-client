@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author IkhtiyorDev  <br/>
  * Date 09/07/22
@@ -24,5 +26,10 @@ public class TgTgControllerImpl implements TgController {
     @Override
     public HttpEntity<?> chatList() {
         return tgService.chatList();
+    }
+
+    @Override
+    public HttpEntity<?> infoUsersList( List<Long> userIdList) {
+        return tgService.infoUsersList(userIdList);
     }
 }

@@ -19,6 +19,10 @@ public class HandlerService implements ResultHandler {
             log.info("TdApi.GetContacts.CONSTRUCTOR {}", object);
 
         }
+        if (object.getConstructor() == TdApi.UserFullInfo.CONSTRUCTOR) {
+            log.info("TdApi.UserFullInfo.CONSTRUCTOR {}", object);
+
+        }
 
     }
 }
